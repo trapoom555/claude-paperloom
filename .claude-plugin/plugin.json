@@ -1,0 +1,35 @@
+{
+  "name": "research-librarian",
+  "version": "0.1.0",
+  "description": "Karpathy-style LLM wiki for research papers. Ingest a URL / arXiv ID / DOI / PDF, write a structured summary into a local Obsidian vault, and maintain a finding-level knowledge graph via wikilinks + Dataview.",
+  "author": { "name": "trapoom555" },
+  "keywords": ["research", "obsidian", "knowledge-graph", "papers", "arxiv"],
+  "license": "MIT",
+  "userConfig": {
+    "vault_path": {
+      "type": "string",
+      "title": "Obsidian Vault Path",
+      "description": "Local directory for the research vault. Created by /research-librarian:init if it does not exist.",
+      "default": "~/ResearchLibrarian",
+      "required": true
+    },
+    "open_in_obsidian": {
+      "type": "boolean",
+      "title": "Open new pages in Obsidian after ingest",
+      "description": "If true, ingest opens the new paper page via the obsidian:// URI scheme.",
+      "default": true
+    },
+    "model_normal": {
+      "type": "string",
+      "title": "Normal model",
+      "description": "Model for fast parallel subagents (finding-extractor, finding-linker, metadata-extractor). Defaults to Claude Haiku. To use Ollama instead, set this to an Ollama model name (e.g. llama3.2) and export ANTHROPIC_BASE_URL=http://localhost:11434/v1 in your shell.",
+      "default": "claude-haiku-4-5-20251001"
+    },
+    "model_reasoning": {
+      "type": "string",
+      "title": "Reasoning model",
+      "description": "Model for lite-drafter (critique and critical-thinking steps). Defaults to Claude Sonnet. To use Ollama instead, set this to an Ollama model name (e.g. qwen2.5:14b) and export ANTHROPIC_BASE_URL=http://localhost:11434/v1 in your shell.",
+      "default": "claude-sonnet-4-6"
+    }
+  }
+}
