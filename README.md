@@ -7,20 +7,33 @@
 </p>
 
 <p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+  <a href="LICENSE.txt"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License: Apache 2.0"></a>
   <a href="https://code.claude.com/docs/en/discover-plugins"><img src="https://img.shields.io/badge/Claude_Code-plugin-8B5CF6" alt="Claude Code"></a>
   <a href="https://obsidian.md"><img src="https://img.shields.io/badge/Obsidian-native-7C3AED" alt="Obsidian"></a>
 </p>
 
-<p align="center">
-  <img src="docs/assets/research-knowledge-graph.gif" alt="Research knowledge graph in Obsidian — yellow nodes are papers, green are findings, blue are fields, red are authors" width="720">
-</p>
-
-<p align="center">
-  <sub>
-    🟡 papers &nbsp;·&nbsp; 🟢 findings &nbsp;·&nbsp; 🔵 fields &nbsp;·&nbsp; 🔴 authors
-  </sub>
-</p>
+<table align="center">
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/assets/research-knowledge-graph.gif" alt="Research knowledge graph in Obsidian — yellow nodes are papers, green are findings, blue are fields, red are authors" width="100%">
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/assets/paper-info-page.gif" alt="Per-paper info page with 4-section summary, findings, and edges" width="100%">
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <sub>
+        Knowledge graph view — 🟡 papers · 🟢 findings · 🔵 fields · 🔴 authors. Example shown: <a href="https://opentyphoon.ai/blog/en">Typhoon.AI</a> research papers.
+      </sub>
+    </td>
+    <td align="center">
+      <sub>
+        Per-paper info page — 4-section summary (incl. critique), atomic findings, metadata + quality scores, and typed edges to related work.
+      </sub>
+    </td>
+  </tr>
+</table>
 
 **Keep every paper you care about. See how they connect.** Drop in a URL, arXiv ID, DOI, or PDF — Claude files it into an Obsidian vault, extracts the atomic claims, and wires them to everything you've read before with typed edges: `supports`, `contradicts`, `extends`, `uses`, `similar-to`.
 
@@ -40,14 +53,6 @@ Based on [Andrej Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/4
 - **Pre-built Dataview views** — by-author, by-field, contradictions, high-credibility, recent-papers.
 - **Obsidian-native** — plain wikilinks + YAML frontmatter, no custom app, no lock-in.
 - **Local model support** — point at Ollama via `ANTHROPIC_BASE_URL`.
-
-<p align="center">
-  <img src="docs/assets/paper-info-page.gif" alt="Per-paper info page with 4-section summary, findings, and edges" width="720">
-</p>
-
-<p align="center">
-  <sub>Each paper page: 4-section summary (incl. critique), atomic findings, metadata + quality scores, and typed edges to related work.</sub>
-</p>
 
 ---
 
@@ -89,9 +94,3 @@ Open the vault folder in Obsidian and turn off Restricted Mode once to activate 
 - [Pipeline](docs/pipeline.md) — the 4-LLM-call ingest pipeline, section detection, models, token cost.
 - [Linking](docs/linking.md) — five-layer linking, relation types, paper-level aggregation.
 - [Architecture](docs/architecture.md) — vault layout, plugin structure, design principles, out-of-scope.
-
----
-
-## License
-
-MIT.
