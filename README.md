@@ -24,7 +24,7 @@
   <tr>
     <td align="center">
       <sub>
-        Knowledge graph view — 🟡 papers · 🟢 findings · 🔵 fields · 🔴 authors. Example shown: <a href="https://opentyphoon.ai/blog/en">Typhoon.AI</a> research papers.
+        Knowledge graph view — 🟡 papers · 🟢 findings · 🟣 fields · 🔴 authors. Example shown: <a href="https://opentyphoon.ai/blog/en">Typhoon.AI</a> research papers.
       </sub>
     </td>
     <td align="center">
