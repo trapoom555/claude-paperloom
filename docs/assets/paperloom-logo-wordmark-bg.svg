@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 200" role="img" aria-label="paperloom">
+  <title>paperloom</title>
+  <desc>paperloom logo with animated woven knowledge graph icon and wordmark on a dark background.</desc>
+
+  <defs>
+    <clipPath id="wpaper3"><rect x="100" y="65" width="80" height="110" rx="3" transform="rotate(7 140 120)"/></clipPath>
+  </defs>
+
+  <rect x="0" y="0" width="720" height="200" rx="14" fill="#1B2A41"/>
+
+  <g transform="translate(0,-20)">
+    <g fill="#FAFAF7" stroke="#FAFAF7" stroke-width="2.5" stroke-linejoin="round">
+      <rect x="60" y="60" width="80" height="110" rx="3" transform="rotate(-9 100 115)" fill="#243752"/>
+      <rect x="80" y="55" width="80" height="110" rx="3" transform="rotate(-1 120 110)" fill="#2A3F5C"/>
+      <rect x="100" y="65" width="80" height="110" rx="3" transform="rotate(7 140 120)" fill="#314869"/>
+    </g>
+
+    <g stroke="#FAFAF7" stroke-width="1.2" stroke-linecap="round" opacity="0.45" clip-path="url(#wpaper3)" transform="rotate(7 140 120)">
+      <line x1="115" y1="90"  x2="170" y2="90"/>
+      <line x1="115" y1="105" x2="165" y2="105"/>
+      <line x1="115" y1="120" x2="170" y2="120"/>
+      <line x1="115" y1="135" x2="155" y2="135"/>
+    </g>
+
+    <g fill="none" stroke="#E07856" stroke-width="2.4" stroke-linecap="round">
+      <path d="M14,90 Q55,70 95,95 T175,95 Q205,90 226,108" stroke-dasharray="6 5">
+        <animate attributeName="stroke-dashoffset" values="0;-22" dur="2.6s" repeatCount="indefinite"/>
+      </path>
+      <path d="M14,150 Q60,170 105,148 T185,150 Q210,158 226,144" stroke-dasharray="6 5">
+        <animate attributeName="stroke-dashoffset" values="0;22" dur="3.4s" repeatCount="indefinite"/>
+      </path>
+    </g>
+
+    <g fill="#E07856">
+      <circle cx="95"  cy="95"  r="3.6"><animate attributeName="r" values="3.2;4.4;3.2" dur="2.6s" repeatCount="indefinite"/></circle>
+      <circle cx="175" cy="95"  r="3.6"><animate attributeName="r" values="3.2;4.4;3.2" dur="2.6s" begin="0.9s" repeatCount="indefinite"/></circle>
+      <circle cx="105" cy="148" r="3.6"><animate attributeName="r" values="3.2;4.4;3.2" dur="3.4s" begin="0.4s" repeatCount="indefinite"/></circle>
+      <circle cx="185" cy="150" r="3.6"><animate attributeName="r" values="3.2;4.4;3.2" dur="3.4s" begin="1.7s" repeatCount="indefinite"/></circle>
+    </g>
+  </g>
+
+  <g font-family="ui-sans-serif,system-ui,-apple-system,Segoe UI,Inter,Helvetica,Arial,sans-serif">
+    <text x="270" y="115" font-size="68" font-weight="500" letter-spacing="-1.5" fill="#FAFAF7">paper<tspan fill="#E07856">loom</tspan></text>
+    <text x="272" y="148" font-size="18" font-weight="400" fill="#FAFAF7" opacity="0.65" letter-spacing="0.4">a woven knowledge graph for your papers</text>
+  </g>
+</svg>
