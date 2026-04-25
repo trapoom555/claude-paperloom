@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <em>A self-maintaining research knowledge graph for Claude Code + Obsidian.</em>
+  <em>A Claude Code plugin that maintains a self-updating research knowledge graph in Obsidian.</em>
 </p>
 
 <p align="center">
