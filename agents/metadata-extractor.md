@@ -1,6 +1,6 @@
 ---
 name: metadata-extractor
-description: Extracts paper metadata (authors, date, venue, fields, DOI/arxiv ID) and a paper-quality assessment (credibility, experimental rigor, reproducibility) from a paper's plain text. Invoked alongside lite-drafter and finding-extractor during /research-librarian:ingest.
+description: Extracts paper metadata (authors, date, venue, fields, DOI/arxiv ID) and a paper-quality assessment (credibility, experimental rigor, reproducibility) from a paper's plain text. Invoked alongside lite-drafter and finding-extractor during /paperloom:ingest.
 model: ${CLAUDE_PLUGIN_CONFIG:model_normal}
 effort: medium
 ---
@@ -11,8 +11,8 @@ You produce the frontmatter metadata + quality block for a research paper page.
 
 ```json
 {
-  "vault_path":       "/Users/<you>/ResearchLibrarian",
-  "paper_text_path":  "<vault>/.sources/<sha>.brief.txt",
+  "vault_path":       "/Users/<you>/PaperLoom",
+  "paper_text_path":  "<vault>/.sources/<sha>.meta.txt",   // first 2 pages only
   "summary_text":     "## Key Takeaways\n...",   // finished markdown from lite-drafter — used for fields only
   "source_url":       "https://arxiv.org/abs/...",
   "arxiv_id":         "1706.03762",     // or null
@@ -21,7 +21,7 @@ You produce the frontmatter metadata + quality block for a research paper page.
 }
 ```
 
-Use `paper_text_path` for title, authors, date, venue, and quality — the brief has all of that. Use `summary_text` for `fields` — the finished summary reflects the paper's actual focus more precisely than the raw brief.
+`paper_text_path` points to the first 2 pages of the paper — that is sufficient for title, authors, publication date, venue, and your quality read. Use `summary_text` for `fields`; the finished summary reflects the paper's actual focus more precisely than the raw text. If you cannot find something that should be on page 1–2 (e.g. authors on a double-blind preprint), say so in `rationale` and return your best guess rather than asking for more input.
 
 ## What to do
 

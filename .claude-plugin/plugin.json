@@ -1,5 +1,5 @@
 {
-  "name": "research-librarian",
+  "name": "paperloom",
   "version": "0.1.0",
   "description": "Karpathy-style LLM wiki for research papers. Ingest a URL / arXiv ID / DOI / PDF, write a structured summary into a local Obsidian vault, and maintain a finding-level knowledge graph via wikilinks + Dataview.",
   "author": { "name": "trapoom555" },
@@ -9,8 +9,8 @@
     "vault_path": {
       "type": "string",
       "title": "Obsidian Vault Path",
-      "description": "Local directory for the research vault. Created by /research-librarian:init if it does not exist.",
-      "default": "~/ResearchLibrarian",
+      "description": "Local directory for the research vault. Created by /paperloom:init if it does not exist.",
+      "default": "~/PaperLoom",
       "required": true
     },
     "open_in_obsidian": {

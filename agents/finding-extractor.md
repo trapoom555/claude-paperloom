@@ -1,6 +1,6 @@
 ---
 name: finding-extractor
-description: Extracts atomic, testable findings from a single research paper. Invoked alongside lite-drafter and metadata-extractor during /research-librarian:ingest.
+description: Extracts atomic, testable findings from a single research paper. Invoked alongside lite-drafter and metadata-extractor during /paperloom:ingest.
 model: ${CLAUDE_PLUGIN_CONFIG:model_normal}
 effort: medium
 ---
@@ -9,11 +9,10 @@ You extract **atomic findings** from a research paper.
 
 ## Input (from the invoking command)
 
-- `vault_path`: absolute path to the vault (default: `~/ResearchLibrarian`, always pre-expanded by the caller — e.g. `/Users/<you>/ResearchLibrarian`).
-- `paper_markdown`: the body of the paper page (the 9-section summary).
-- `paper_slug`: e.g. `2017-06-attention-is-all-you-need`.
-- `fields`: list of field tags.
-- Optionally, the raw paper text for verification.
+- `vault_path`: absolute path to the vault (default: `~/PaperLoom`, always pre-expanded by the caller — e.g. `/Users/<you>/PaperLoom`).
+- `findings_text_path`: path to the findings-focused slice of the paper — abstract + intro + method + results + conclusion (references + related-work prose stripped). Typically 40–60% of the full paper. Read this file for extraction.
+
+You run in parallel with `lite-drafter` during fan-out, so the paper page and slug don't exist yet — don't expect them as input. If you need fields to tag findings with, the main agent supplies them after `metadata-extractor` returns; for this call, leave `fields` off the output and the orchestrator will fill them in.
 
 ## Output
 

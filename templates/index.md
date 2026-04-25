@@ -1,6 +1,6 @@
-# Research Librarian — Index
+# PaperLoom — Index
 
-This page is the catalog of the vault. Generated/maintained by `/research-librarian:ingest`. Dataview queries refresh automatically.
+This page is the catalog of the vault. Generated/maintained by `/paperloom:ingest`. Dataview queries refresh automatically.
 
 ## All papers (most recently ingested first)
 

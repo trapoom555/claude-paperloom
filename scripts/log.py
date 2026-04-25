@@ -5,7 +5,7 @@ Usage:
     python3 log.py <vault> <action> <target> <note...>
 
 Example:
-    python3 log.py ~/ResearchLibrarian ingest-lite 2017-06-attention-is-all-you-need \
+    python3 log.py ~/PaperLoom ingest-lite 2017-06-attention-is-all-you-need \
         "8 findings, 5 edges"
 """
 

@@ -3,7 +3,7 @@ description: Lite ingest — fetch a paper and write a short 4-section triage su
 argument-hint: "<url | arxiv-id | doi | pdf-path>"
 ---
 
-# /research-librarian:ingest
+# /paperloom:ingest
 
 Fast, triage-grade ingest. `$ARGUMENTS` is the paper reference.
 
@@ -19,19 +19,27 @@ Print exactly:
 Shell out. The script validates the vault, classifies the input, caches the raw file, and produces full + brief text:
 
 ```bash
-python3 "${CLAUDE_PLUGIN_ROOT}/scripts/fetch_paper.py" "<vault-path>" "$ARGUMENTS"
+"${CLAUDE_PLUGIN_ROOT}/.venv/bin/python3" "${CLAUDE_PLUGIN_ROOT}/scripts/fetch_paper.py" "<vault-path>" "$ARGUMENTS"
 ```
 
-Parse the JSON result. Keep `full_text_path`, `brief_text_path`, `source_url`, `arxiv_id`, `doi` for later steps.
+Parse the JSON result.
+
+**Early exit — duplicate paper.** If the result has `"already_exists": true`, the paper is already in the vault (matched by arxiv-id, doi, or source-url). Do not run any further steps. Print a short message naming the existing slug, e.g.:
+
+> ⏭️ This paper is already in your vault as `papers/<existing.slug>.md` — skipping ingest.
+
+Then stop.
+
+Otherwise, keep `full_text_path`, `brief_text_path`, `findings_text_path`, `meta_text_path`, `source_url`, `arxiv_id`, `doi` for later steps.
 
 ## Step 2 — scan vault for context
 
 Run these in parallel (they're independent reads):
 
 ```bash
-python3 "${CLAUDE_PLUGIN_ROOT}/scripts/vault_scan.py" fields  "<vault-path>"
-python3 "${CLAUDE_PLUGIN_ROOT}/scripts/vault_scan.py" papers  "<vault-path>"
-python3 "${CLAUDE_PLUGIN_ROOT}/scripts/vault_scan.py" authors "<vault-path>"
+"${CLAUDE_PLUGIN_ROOT}/.venv/bin/python3" "${CLAUDE_PLUGIN_ROOT}/scripts/vault_scan.py" fields  "<vault-path>"
+"${CLAUDE_PLUGIN_ROOT}/.venv/bin/python3" "${CLAUDE_PLUGIN_ROOT}/scripts/vault_scan.py" papers  "<vault-path>"
+"${CLAUDE_PLUGIN_ROOT}/.venv/bin/python3" "${CLAUDE_PLUGIN_ROOT}/scripts/vault_scan.py" authors "<vault-path>"
 ```
 
 Hold the outputs: `existing_fields`, `vault_papers`, `existing_authors`.
@@ -43,14 +51,14 @@ Launch in **one parallel message**:
 | Agent | Model | Input | Purpose |
 |---|---|---|---|
 | `lite-drafter` | `model_reasoning` | `brief_text_path` | returns the 4 sections JSON |
-| `finding-extractor` | `model_normal` | `full_text_path` | returns atomic findings JSON |
+| `finding-extractor` | `model_normal` | `findings_text_path` | returns atomic findings JSON. Fed the abstract + intro + method + results + conclusion slice, not the full paper — saves tokens while keeping theoretical / empirical / definitional claims reachable. |
 
 **Do not spawn a citation-linker agent** — bibliographic matching is deterministic and runs in step 6 via `citation_match.py`.
 
 ## Step 4 — metadata (after lite-drafter)
 
 Once `lite-drafter` returns, spawn `metadata-extractor` (`model_normal`) with:
-- `paper_text_path` = `brief_text_path` (title/authors/date/venue/quality)
+- `paper_text_path` = `meta_text_path` (first 2 pages — enough for title/authors/date/venue/quality)
 - `summary_text` = the concatenated markdown returned by `lite-drafter` (for `fields`)
 - `existing_fields` = list from step 2
 - `source_url`, `arxiv_id`, `doi` = from step 1
@@ -62,7 +70,7 @@ The agent returns metadata JSON. It does NOT compute `quality.overall` or the sl
 Build the payload (metadata + sections + source_url + empty findings/relations) and pipe to:
 
 ```bash
-python3 "${CLAUDE_PLUGIN_ROOT}/scripts/assemble_paper.py" --input /tmp/paper_payload.json
+"${CLAUDE_PLUGIN_ROOT}/.venv/bin/python3" "${CLAUDE_PLUGIN_ROOT}/scripts/assemble_paper.py" --input /tmp/paper_payload.json
 ```
 
 The script computes `quality.overall`, generates `slug` if absent, fills `templates/paper-lite.md`, and writes `<vault>/papers/<slug>.md`. It refuses to overwrite unless `overwrite: true` is set in the payload — ask the user first.
@@ -75,21 +83,21 @@ Launch all four at once — they're independent:
 
 ```bash
 # 6a. Write finding files in one script call.
-python3 "${CLAUDE_PLUGIN_ROOT}/scripts/assemble_finding.py" --input /tmp/findings_payload.json
+"${CLAUDE_PLUGIN_ROOT}/.venv/bin/python3" "${CLAUDE_PLUGIN_ROOT}/scripts/assemble_finding.py" --input /tmp/findings_payload.json
 
 # 6b. Deterministic citation matching. Feed vault_papers from step 2.
-python3 "${CLAUDE_PLUGIN_ROOT}/scripts/citation_match.py" \
+"${CLAUDE_PLUGIN_ROOT}/.venv/bin/python3" "${CLAUDE_PLUGIN_ROOT}/scripts/citation_match.py" \
     "<full_text_path>" <(echo "$VAULT_PAPERS_JSON") \
     --own-slug "<slug>"
 
 # 6c. Candidate finding shortlist for finding-linker.
-python3 "${CLAUDE_PLUGIN_ROOT}/scripts/vault_scan.py" findings-candidates "<vault-path>" \
+"${CLAUDE_PLUGIN_ROOT}/.venv/bin/python3" "${CLAUDE_PLUGIN_ROOT}/scripts/vault_scan.py" findings-candidates "<vault-path>" \
     --fields <metadata.fields joined by ,> \
     --authors "<metadata.authors joined by ;>" \
-    --cap 50
+    --cap 30
 
 # 6d. Missing author/field stubs.
-python3 "${CLAUDE_PLUGIN_ROOT}/scripts/create_stubs.py" --input /tmp/stubs_payload.json
+"${CLAUDE_PLUGIN_ROOT}/.venv/bin/python3" "${CLAUDE_PLUGIN_ROOT}/scripts/create_stubs.py" --input /tmp/stubs_payload.json
 ```
 
 Now update the paper page's `findings:` frontmatter with the new slugs:
@@ -109,7 +117,7 @@ Spawn **`finding-linker`** (`model_normal`) **once**, with:
 It returns typed-edge proposals. Pipe them to:
 
 ```bash
-python3 "${CLAUDE_PLUGIN_ROOT}/scripts/apply_edges.py" --input /tmp/edges_payload.json
+"${CLAUDE_PLUGIN_ROOT}/.venv/bin/python3" "${CLAUDE_PLUGIN_ROOT}/scripts/apply_edges.py" --input /tmp/edges_payload.json
 ```
 
 The script:
@@ -124,7 +132,7 @@ Pass `cites` from 6b inside the same payload.
 ## Step 8 — log
 
 ```bash
-python3 "${CLAUDE_PLUGIN_ROOT}/scripts/log.py" "<vault-path>" ingest-lite "<slug>" \
+"${CLAUDE_PLUGIN_ROOT}/.venv/bin/python3" "${CLAUDE_PLUGIN_ROOT}/scripts/log.py" "<vault-path>" ingest-lite "<slug>" \
     "<n> findings, <e> edges"
 ```
 
@@ -133,7 +141,7 @@ python3 "${CLAUDE_PLUGIN_ROOT}/scripts/log.py" "<vault-path>" ingest-lite "<slug
 Invoke lint scoped to the findings just written, so the dedup check only considers the new set against the existing vault (not all-pairs):
 
 ```bash
-python3 "${CLAUDE_PLUGIN_ROOT}/scripts/lint.py" "<vault-path>" \
+"${CLAUDE_PLUGIN_ROOT}/.venv/bin/python3" "${CLAUDE_PLUGIN_ROOT}/scripts/lint.py" "<vault-path>" \
     --new-slugs "<finding-slug-1>,<finding-slug-2>,..."
 ```
 

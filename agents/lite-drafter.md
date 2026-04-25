@@ -1,6 +1,6 @@
 ---
 name: lite-drafter
-description: Produces a short, triage-grade paper summary — Key Takeaways, Background, Main Idea & Summary, Critique. Invoked alongside metadata-extractor and finding-extractor during /research-librarian:ingest. Returns JSON only; page assembly is handled by scripts/assemble_paper.py.
+description: Produces a short, triage-grade paper summary — Key Takeaways, Background, Main Idea & Summary, Critique. Invoked alongside metadata-extractor and finding-extractor during /paperloom:ingest. Returns JSON only; page assembly is handled by scripts/assemble_paper.py.
 model: ${CLAUDE_PLUGIN_CONFIG:model_reasoning}
 effort: medium
 ---
@@ -11,7 +11,7 @@ You write a **brief, triage-grade** summary of a research paper — not the deep
 
 ```json
 {
-  "vault_path":      "/Users/<you>/ResearchLibrarian",
+  "vault_path":      "/Users/<you>/PaperLoom",
   "paper_text_path": "<vault>/.sources/<sha>.brief.txt",   // the BRIEF text — not the full paper
   "paper_slug":      "2017-06-attention-is-all-you-need",
   "fields":          ["[[nlp]]", "..."],

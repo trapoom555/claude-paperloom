@@ -1,4 +1,4 @@
-"""Shared helpers for research-librarian scripts.
+"""Shared helpers for paperloom scripts.
 
 Imported by sibling scripts. Keeps YAML frontmatter, path resolution, slug
 generation, and wikilink handling in one place.
@@ -30,7 +30,7 @@ def die(msg: str, code: int = 1) -> None:
 def resolve_vault(raw: str | os.PathLike[str] | None) -> Path:
     """Expand ~, env vars, and resolve to absolute path. Does not require existence."""
     if raw is None or raw == "":
-        raw = "~/ResearchLibrarian"
+        raw = "~/PaperLoom"
     p = Path(os.path.expandvars(os.path.expanduser(str(raw)))).resolve()
     return p
 
@@ -38,9 +38,9 @@ def resolve_vault(raw: str | os.PathLike[str] | None) -> Path:
 def require_vault(raw: str | os.PathLike[str] | None) -> Path:
     vault = resolve_vault(raw)
     if not vault.is_dir():
-        die(f"vault does not exist: {vault} — run /research-librarian:init first")
+        die(f"vault does not exist: {vault} — run /paperloom:init first")
     if not (vault / "CLAUDE.md").is_file():
-        die(f"vault missing CLAUDE.md: {vault} — run /research-librarian:init first")
+        die(f"vault missing CLAUDE.md: {vault} — run /paperloom:init first")
     return vault
 
 

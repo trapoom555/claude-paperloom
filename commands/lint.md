@@ -2,7 +2,7 @@
 description: Scan the vault for orphan pages, frontmatter schema drift, duplicate findings, unmarked contradictions, and stale wikilinks. Reports issues without auto-fixing.
 ---
 
-# /research-librarian:lint
+# /paperloom:lint
 
 Read-only health check of the vault. All six checks run in `scripts/lint.py`.
 
@@ -16,12 +16,12 @@ Then proceed.
 
 ## Steps
 
-1. Resolve the vault path from `${CLAUDE_PLUGIN_CONFIG:vault_path}` (default `~/ResearchLibrarian`) — pass it raw to the script, which expands it.
+1. Resolve the vault path from `${CLAUDE_PLUGIN_CONFIG:vault_path}` (default `~/PaperLoom`) — pass it raw to the script, which expands it.
 
 2. Run:
 
    ```bash
-   python3 "${CLAUDE_PLUGIN_ROOT}/scripts/lint.py" "<vault-path>"
+   "${CLAUDE_PLUGIN_ROOT}/.venv/bin/python3" "${CLAUDE_PLUGIN_ROOT}/scripts/lint.py" "<vault-path>"
    ```
 
    The script performs:
@@ -36,7 +36,7 @@ Then proceed.
 
    Then appends a `lint` line to `<vault>/log.md`.
 
-3. When called from `/research-librarian:ingest`, pass `--new-slugs <slug1,slug2,...>` so the dedup check focuses exactly on the freshly-written findings (don't rely on the date fallback — an earlier session could bump the "today" window).
+3. When called from `/paperloom:ingest`, pass `--new-slugs <slug1,slug2,...>` so the dedup check focuses exactly on the freshly-written findings (don't rely on the date fallback — an earlier session could bump the "today" window).
 
 4. Relay the script's stdout to the user verbatim. Non-zero exit means issues exist — that is expected output, not a failure. Don't retry.
 

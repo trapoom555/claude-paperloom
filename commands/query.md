@@ -3,13 +3,13 @@ description: Ask a question of the research vault. Searches papers and findings,
 argument-hint: "<question>"
 ---
 
-# /research-librarian:query
+# /paperloom:query
 
 `$ARGUMENTS` is a natural-language question about the vault's contents.
 
 ## Vault path
 
-Read `vault_path` from `${CLAUDE_PLUGIN_CONFIG:vault_path}` (default `~/ResearchLibrarian`), expand `~` to an absolute path, and use that for every Read/Grep/Glob.
+Read `vault_path` from `${CLAUDE_PLUGIN_CONFIG:vault_path}` (default `~/PaperLoom`), expand `~` to an absolute path, and use that for every Read/Grep/Glob.
 
 ## Steps
 
@@ -21,7 +21,7 @@ Read `vault_path` from `${CLAUDE_PLUGIN_CONFIG:vault_path}` (default `~/Research
 4. **Log** via the shared script:
 
    ```bash
-   python3 "${CLAUDE_PLUGIN_ROOT}/scripts/log.py" "<vault-path>" query "<one-line question>" "cited <n> files"
+   "${CLAUDE_PLUGIN_ROOT}/.venv/bin/python3" "${CLAUDE_PLUGIN_ROOT}/scripts/log.py" "<vault-path>" query "<one-line question>" "cited <n> files"
    ```
 
 ## Guardrails

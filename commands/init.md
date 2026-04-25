@@ -1,15 +1,15 @@
 ---
-description: Scaffold a new Research Librarian vault at the configured path (or at an optional path argument). Idempotent — fills missing files without clobbering existing ones.
+description: Scaffold a new PaperLoom at the configured path (or at an optional path argument). Idempotent — fills missing files without clobbering existing ones.
 argument-hint: "[vault-path]"
 ---
 
-# /research-librarian:init
+# /paperloom:init
 
-Scaffold the Obsidian vault that the Research Librarian uses. All filesystem work is done by `scripts/init_vault.py` — this command just resolves the path and shells out.
+Scaffold the Obsidian vault that PaperLoom uses. All filesystem work is done by `scripts/init_vault.py` — this command just resolves the path and shells out.
 
 ## Inputs
 
-- `$ARGUMENTS` — optional vault path. Precedence: argument > `${CLAUDE_PLUGIN_CONFIG:vault_path}` > `~/ResearchLibrarian`.
+- `$ARGUMENTS` — optional vault path. Precedence: argument > `${CLAUDE_PLUGIN_CONFIG:vault_path}` > `~/PaperLoom`.
 
 ## Steps
 
@@ -18,18 +18,18 @@ Scaffold the Obsidian vault that the Research Librarian uses. All filesystem wor
 2. Run:
 
    ```bash
-   python3 "${CLAUDE_PLUGIN_ROOT}/scripts/init_vault.py" "<vault-path>"
+   "${CLAUDE_PLUGIN_ROOT}/.venv/bin/python3" "${CLAUDE_PLUGIN_ROOT}/scripts/init_vault.py" "<vault-path>"
    ```
 
    The script:
    - Resolves the absolute path, prints it ("Using vault: /Users/...").
    - Creates `papers/ findings/ authors/ fields/ views/ .sources/`.
    - Copies `CLAUDE.md`, `index.md`, `log.md` and the five view pages from `templates/` if missing. Never overwrites.
+   - Seeds `.obsidian/` from the bundled `templates/dot-obsidian/` (Dataview plugin files + `community-plugins.json` pre-enabling it, plus baseline `app.json` / `appearance.json` / `core-plugins.json`). Existing files are never overwritten.
    - Appends one line to `log.md`.
    - Prints a created/skipped report.
 
-3. Relay the script's stdout to the user verbatim, plus the reminder:
-   > Install the **Dataview** community plugin in Obsidian to activate the view pages.
+3. Relay the script's stdout to the user verbatim. Remind them to turn off Obsidian's Restricted Mode once on first vault open so the bundled Dataview plugin can load.
 
 ## Guardrails
 

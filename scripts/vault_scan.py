@@ -63,8 +63,14 @@ def cmd_authors(vault: Path) -> list[str]:
 
 
 def cmd_findings_candidates(
-    vault: Path, fields: list[str], authors: list[str], cap: int = 50,
+    vault: Path, fields: list[str], authors: list[str], cap: int = 30,
 ) -> list[dict[str, Any]]:
+    """Return at most `cap` candidate findings ranked by field/author overlap.
+
+    Payload is kept minimal (slug, statement, fields) — finding-linker only
+    needs these to rank and type edges; finding-type / hedging / source-paper
+    were dropped to cut token cost on the linker call.
+    """
     field_set = {f.strip() for f in fields if f.strip()}
     author_set = {a.strip() for a in authors if a.strip()}
 
@@ -91,9 +97,6 @@ def cmd_findings_candidates(
             "slug": fm.get("slug") or slug_from_path(path),
             "statement": fm.get("statement"),
             "fields": [f"[[{f}]]" for f in sorted(f_fields)],
-            "finding-type": fm.get("finding-type"),
-            "hedging": fm.get("hedging"),
-            "source-paper": f"[[{src}]]" if src else None,
         }))
 
     scored.sort(key=lambda t: -t[0])
@@ -129,7 +132,7 @@ def main(argv: list[str]) -> int:
     s.add_argument("vault")
     s.add_argument("--fields", default="", help="comma-separated kebab field slugs")
     s.add_argument("--authors", default="", help="semicolon-separated 'Surname, Given' names")
-    s.add_argument("--cap", type=int, default=50)
+    s.add_argument("--cap", type=int, default=30)
 
     args = ap.parse_args(argv)
     vault = require_vault(args.vault)

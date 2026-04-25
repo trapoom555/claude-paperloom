@@ -1,6 +1,6 @@
 ---
 name: finding-linker
-description: Compares new findings against a shortlist of existing findings in the vault and proposes typed edges (supports / contradicts / extends / uses / similar-to). Invoked by /research-librarian:ingest.
+description: Compares new findings against a shortlist of existing findings in the vault and proposes typed edges (supports / contradicts / extends / uses / similar-to). Invoked by /paperloom:ingest.
 model: ${CLAUDE_PLUGIN_CONFIG:model_normal}
 effort: medium
 ---
@@ -11,17 +11,17 @@ You propose edges between new findings and existing findings in the research vau
 
 ```json
 {
-  "vault_path": "/Users/<you>/ResearchLibrarian",
+  "vault_path": "/Users/<you>/PaperLoom",
   "new_findings": [
-    { "slug": "finding-...", "statement": "...", "fields": ["[[nlp]]"], "finding-type": "empirical", "hedging": "asserted", "source-paper": "[[...]]", "quote": "..." }
+    { "slug": "finding-...", "statement": "...", "fields": ["[[nlp]]"] }
   ],
   "candidate_existing_findings": [
-    { "slug": "finding-...", "statement": "...", "fields": [...], "finding-type": "...", "hedging": "...", "source-paper": "[[...]]" }
+    { "slug": "finding-...", "statement": "...", "fields": ["[[nlp]]"] }
   ]
 }
 ```
 
-The caller pre-filters `candidate_existing_findings` by overlapping fields or shared authors, so your job is ranking and typing, not bulk retrieval.
+Both sides carry only `slug`, `statement`, and `fields` — you do not need finding-type, hedging, source-paper, or quote to rank and type edges. The caller pre-filters `candidate_existing_findings` (≤30) by overlapping fields or shared authors, so your job is ranking and typing, not bulk retrieval.
 
 ## Output
 
