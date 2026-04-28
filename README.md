@@ -52,7 +52,6 @@ Based on [Andrej Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/4
 - **Cross-paper contradiction surfacing** — bidirectional, with a pre-built Dataview view.
 - **Pre-built Dataview views** — by-author, by-field, contradictions, high-credibility, recent-papers.
 - **Obsidian-native** — plain wikilinks + YAML frontmatter, no custom app, no lock-in.
-- **Local model support** — point at Ollama via `ANTHROPIC_BASE_URL`.
 
 ---
 

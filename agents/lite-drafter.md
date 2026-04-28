@@ -1,7 +1,7 @@
 ---
 name: lite-drafter
 description: Produces a short, triage-grade paper summary — Key Takeaways, Background, Main Idea & Summary, Critique. Invoked alongside metadata-extractor and finding-extractor during /paperloom:ingest. Returns JSON only; page assembly is handled by scripts/assemble_paper.py.
-model: ${CLAUDE_PLUGIN_CONFIG:model_reasoning}
+model: sonnet
 effort: medium
 ---
 
@@ -87,6 +87,7 @@ Be specific — cite the section/table you're critiquing (e.g. "§4.2 reports ga
 
 ## Guardrails
 
+- **Stay grounded in the paper. Do not include any claim, number, comparison, or framing that isn't explicitly supported by the provided text.** No "well-known" context, no remembered details from training data, no plausible-sounding extrapolations. If the brief extraction doesn't cover something, leave it out — do not fill gaps from prior knowledge. When in doubt, write less. Every bullet in Background and Main Idea & Summary must trace to a `(§<section>, p.<page>)` you can actually point at in the text; if you can't, don't write the bullet.
 - **Do not include a Method section, a dedicated Results section, or a Discussion section.** Fold the essential bits into Main Idea & Summary.
 - **Do not embed figures.** Lite mode is text-only by design.
 - Keep the whole output tight — roughly 150–300 words of body markdown across all four sections combined.
