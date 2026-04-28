@@ -67,7 +67,47 @@ The agent returns metadata JSON. It does NOT compute `quality.overall` or the sl
 
 ## Step 5 — assemble the paper page
 
-Build the payload (metadata + sections + source_url + empty findings/relations) and pipe to:
+**Before writing any `/tmp/*.json` payload in this step or step 6/7**, first clear stale files from prior runs in a single Bash call:
+
+```bash
+rm -f /tmp/paper_payload.json /tmp/findings_payload.json /tmp/stubs_payload.json /tmp/edges_payload.json
+```
+
+Without this, the `Write` tool refuses to overwrite a `/tmp/*.json` file it has not Read in the current conversation, and the ingest stalls.
+
+Write the payload to `/tmp/paper_payload.json` with this **exact shape** (note `metadata` is a nested key — flat layouts will fail with `KeyError: 'metadata'`):
+
+```json
+{
+  "vault_path": "<vault-path>",
+  "source_url": "<source_url from step 1>",
+  "metadata": {
+    "title": "...",
+    "authors": ["Surname, Given", "..."],
+    "publication-date": "YYYY-MM-DD",
+    "venue": "...",
+    "fields": ["nlp", "..."],
+    "arxiv-id": "..." ,
+    "doi": null,
+    "quality": {
+      "credibility": 5,
+      "experimental-rigor": 5,
+      "reproducibility": "code-released",
+      "rationale": "..."
+    }
+  },
+  "sections": {
+    "key_takeaways": "...",
+    "background": "...",
+    "main_idea_and_summary": "...",
+    "critique": "..."
+  },
+  "findings": [],
+  "relations": {}
+}
+```
+
+Then pipe it in:
 
 ```bash
 "${CLAUDE_PLUGIN_ROOT}/.venv/bin/python3" "${CLAUDE_PLUGIN_ROOT}/scripts/assemble_paper.py" --input /tmp/paper_payload.json
@@ -79,7 +119,24 @@ Capture the returned `slug`.
 
 ## Step 6 — in parallel: findings, citations, candidates, stubs
 
-Launch all four at once — they're independent:
+`/tmp/findings_payload.json` shape (note `source_paper`, not `paper_slug`):
+
+```json
+{
+  "vault_path": "<vault-path>",
+  "source_paper": "<slug from step 5>",
+  "fields": ["nlp", "..."],
+  "findings": [ { "statement": "...", "source-ref": "...", "finding-type": "empirical", "hedging": "asserted", "quote": "..." } ]
+}
+```
+
+`/tmp/stubs_payload.json` shape:
+
+```json
+{ "vault_path": "<vault-path>", "authors": ["Surname, Given", "..."], "fields": ["nlp", "..."] }
+```
+
+Launch all four at once — they're independent. **6c uses `--exclude-paper <slug>` to keep the just-written findings (from 6a) out of the candidate set, so ordering between 6a and 6c doesn't matter.**
 
 ```bash
 # 6a. Write finding files in one script call.
@@ -94,6 +151,7 @@ Launch all four at once — they're independent:
 "${CLAUDE_PLUGIN_ROOT}/.venv/bin/python3" "${CLAUDE_PLUGIN_ROOT}/scripts/vault_scan.py" findings-candidates "<vault-path>" \
     --fields <metadata.fields joined by ,> \
     --authors "<metadata.authors joined by ;>" \
+    --exclude-paper "<slug>" \
     --cap 30
 
 # 6d. Missing author/field stubs.
@@ -114,7 +172,18 @@ Spawn **`finding-linker`** (`model_normal`) **once**, with:
 - `new_findings` = the slugs + statements + fields written in 6a
 - `candidate_existing_findings` = output of 6c
 
-It returns typed-edge proposals. Pipe them to:
+It returns typed-edge proposals. Write `/tmp/edges_payload.json` with this **exact shape** (note the keys are `new_paper` and `linker_output`, not `source_paper`/`edges`):
+
+```json
+{
+  "vault_path": "<vault-path>",
+  "new_paper": "<slug from step 5>",
+  "linker_output": [ { "from": "<new-finding-slug>", "to": "<existing-finding-slug>", "type": "supports|contradicts|extends|uses|similar-to", "rationale": "..." } ],
+  "cites": ["<paper-slug>", "..."]
+}
+```
+
+If finding-linker returned zero edges (e.g. empty candidate set), still call the script with `"linker_output": []` so paper-level `cites` from 6b get merged in.
 
 ```bash
 "${CLAUDE_PLUGIN_ROOT}/.venv/bin/python3" "${CLAUDE_PLUGIN_ROOT}/scripts/apply_edges.py" --input /tmp/edges_payload.json
@@ -126,8 +195,6 @@ The script:
 - aggregates finding edges to paper-level relations (`uses→builds-on`, `supports`, `extends`, `contradicts`, `similar-to`),
 - mirrors bidirectional paper edges onto target papers,
 - merges with `cites` from 6b into the new paper's `relations.cites`.
-
-Pass `cites` from 6b inside the same payload.
 
 ## Step 8 — log
 
@@ -166,6 +233,7 @@ End-of-run summary:
 ## Guardrails
 
 - **Scripts do the writing.** The LLM only produces JSON payloads for the scripts to consume.
+- **Clear `/tmp/*.json` payloads at the start of step 5** (see the `rm -f` line). The `Write` tool will not overwrite a file it has not Read in the current conversation, so leftover files from a prior ingest run will block the pipeline.
 - **No per-item LLM loops.** If you catch yourself iterating an agent over a list, stop and script it.
 - **Do not embed figures.** Lite mode is text-only.
 - **Do not overwrite** an existing `papers/<slug>.md` without asking.

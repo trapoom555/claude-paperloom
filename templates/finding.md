@@ -61,6 +61,6 @@ WHERE file.path != this.file.path AND (
 
 ```dataview
 LIST
-FROM outgoing([[]]) OR inlinks([[]])
+FROM outgoing([[]]) OR [[]]
 WHERE type = "finding"
 ```

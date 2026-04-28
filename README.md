@@ -52,7 +52,6 @@ Based on [Andrej Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/4
 - **Cross-paper contradiction surfacing** — bidirectional, with a pre-built Dataview view.
 - **Pre-built Dataview views** — by-author, by-field, contradictions, high-credibility, recent-papers.
 - **Obsidian-native** — plain wikilinks + YAML frontmatter, no custom app, no lock-in.
-- **Local model support** — point at Ollama via `ANTHROPIC_BASE_URL`.
 
 ---
 
@@ -62,15 +61,12 @@ Based on [Andrej Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/4
 # 1. Install the plugin
 claude --plugin-dir /path/to/claude-paperloom
 
-# 2. Set up Python deps (plugin expects a venv at the plugin root)
-cd /path/to/claude-paperloom
-python3.11 -m venv .venv
-.venv/bin/pip install pyyaml pymupdf
-
-# 3. Scaffold your vault (default ~/PaperLoom)
+# 2. Scaffold your vault (default ~/PaperLoom)
+#    On first run, this creates `.venv` at the plugin root and installs
+#    dependencies from `requirements.txt` automatically.
 /paperloom:init
 
-# 4. Ingest your first paper
+# 3. Ingest your first paper
 /paperloom:ingest https://arxiv.org/abs/1706.03762
 ```
 

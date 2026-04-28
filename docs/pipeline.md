@@ -52,14 +52,12 @@ Strategies 1 and 2 are unioned; the regex fallback fires only if neither matched
 
 ## Models
 
-Configured per plugin via `.claude-plugin/plugin.json`:
+Hardcoded in each agent's frontmatter:
 
-| Key | Default | Used by |
-|---|---|---|
-| `model_normal` | `claude-haiku-4-5` | `finding-extractor`, `finding-linker`, `metadata-extractor` |
-| `model_reasoning` | `claude-sonnet-4-6` | `lite-drafter` (critique / critical thinking) |
-
-Point either at an Ollama model name and set `ANTHROPIC_BASE_URL=http://localhost:11434/v1` to run locally.
+| Agent | Model |
+|---|---|
+| `finding-extractor`, `finding-linker`, `metadata-extractor` | `haiku` |
+| `lite-drafter` (critique / critical thinking) | `sonnet` |
 
 ## Token Cost Per Ingest
 

@@ -18,18 +18,6 @@
       "title": "Open new pages in Obsidian after ingest",
       "description": "If true, ingest opens the new paper page via the obsidian:// URI scheme.",
       "default": true
-    },
-    "model_normal": {
-      "type": "string",
-      "title": "Normal model",
-      "description": "Model for fast parallel subagents (finding-extractor, finding-linker, metadata-extractor). Defaults to Claude Haiku. To use Ollama instead, set this to an Ollama model name (e.g. llama3.2) and export ANTHROPIC_BASE_URL=http://localhost:11434/v1 in your shell.",
-      "default": "claude-haiku-4-5-20251001"
-    },
-    "model_reasoning": {
-      "type": "string",
-      "title": "Reasoning model",
-      "description": "Model for lite-drafter (critique and critical-thinking steps). Defaults to Claude Sonnet. To use Ollama instead, set this to an Ollama model name (e.g. qwen2.5:14b) and export ANTHROPIC_BASE_URL=http://localhost:11434/v1 in your shell.",
-      "default": "claude-sonnet-4-6"
     }
   }
 }

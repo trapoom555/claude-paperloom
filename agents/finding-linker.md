@@ -1,7 +1,7 @@
 ---
 name: finding-linker
 description: Compares new findings against a shortlist of existing findings in the vault and proposes typed edges (supports / contradicts / extends / uses / similar-to). Invoked by /paperloom:ingest.
-model: ${CLAUDE_PLUGIN_CONFIG:model_normal}
+model: haiku
 effort: medium
 ---
 

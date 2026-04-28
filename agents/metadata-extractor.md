@@ -1,7 +1,7 @@
 ---
 name: metadata-extractor
 description: Extracts paper metadata (authors, date, venue, fields, DOI/arxiv ID) and a paper-quality assessment (credibility, experimental rigor, reproducibility) from a paper's plain text. Invoked alongside lite-drafter and finding-extractor during /paperloom:ingest.
-model: ${CLAUDE_PLUGIN_CONFIG:model_normal}
+model: haiku
 effort: medium
 ---
 

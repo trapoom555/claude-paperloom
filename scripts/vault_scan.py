@@ -5,10 +5,12 @@ Subcommands:
 
     papers              list existing paper frontmatter (for citation_match)
     fields              list kebab field slugs already in vault/fields/
-    findings-candidates --fields f1,f2 --authors 'A;B'
+    findings-candidates --fields f1,f2 --authors 'A;B' [--exclude-paper slug]
                         shortlist existing findings whose fields overlap OR
                         whose source-paper's authors overlap with the given sets.
-                        Cap at 50.
+                        --exclude-paper drops findings from the named source paper
+                        (use this to keep just-written findings out of the linker
+                        candidate set). Cap at 30.
     authors             list existing author filenames (basenames without .md)
     findings-all        every finding's key frontmatter (used by lint)
 
@@ -64,6 +66,7 @@ def cmd_authors(vault: Path) -> list[str]:
 
 def cmd_findings_candidates(
     vault: Path, fields: list[str], authors: list[str], cap: int = 30,
+    exclude_paper: str = "",
 ) -> list[dict[str, Any]]:
     """Return at most `cap` candidate findings ranked by field/author overlap.
 
@@ -86,6 +89,8 @@ def cmd_findings_candidates(
         fm, _ = read_frontmatter(path)
         f_fields = set(_unwrap_list(fm.get("fields") or []))
         src = unwrap_wikilink(fm.get("source-paper") or "")
+        if exclude_paper and src == exclude_paper:
+            continue
         f_authors = paper_authors.get(src, set())
 
         field_overlap = len(f_fields & field_set)
@@ -133,6 +138,7 @@ def main(argv: list[str]) -> int:
     s.add_argument("--fields", default="", help="comma-separated kebab field slugs")
     s.add_argument("--authors", default="", help="semicolon-separated 'Surname, Given' names")
     s.add_argument("--cap", type=int, default=30)
+    s.add_argument("--exclude-paper", default="", help="exclude findings whose source-paper matches this slug")
 
     args = ap.parse_args(argv)
     vault = require_vault(args.vault)
@@ -148,7 +154,7 @@ def main(argv: list[str]) -> int:
     elif args.cmd == "findings-candidates":
         fields = [x for x in args.fields.split(",") if x]
         authors = [x for x in args.authors.split(";") if x]
-        result = cmd_findings_candidates(vault, fields, authors, cap=args.cap)
+        result = cmd_findings_candidates(vault, fields, authors, cap=args.cap, exclude_paper=args.exclude_paper)
     else:
         ap.error(f"unknown subcommand: {args.cmd}")
         return 2
