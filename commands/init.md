@@ -15,9 +15,13 @@ Scaffold the Obsidian vault that PaperLoom uses. All filesystem work is done by 
 
 1. Pick the vault path per the precedence above. Pass the raw path to the script — the script expands `~` and env vars itself.
 
-2. Run:
+2. Bootstrap the plugin venv if it doesn't already exist, then run the scaffolder:
 
    ```bash
+   if [ ! -x "${CLAUDE_PLUGIN_ROOT}/.venv/bin/python3" ]; then
+     python3 -m venv "${CLAUDE_PLUGIN_ROOT}/.venv" \
+       && "${CLAUDE_PLUGIN_ROOT}/.venv/bin/pip" install -r "${CLAUDE_PLUGIN_ROOT}/requirements.txt"
+   fi
    "${CLAUDE_PLUGIN_ROOT}/.venv/bin/python3" "${CLAUDE_PLUGIN_ROOT}/scripts/init_vault.py" "<vault-path>"
    ```
 
